@@ -973,9 +973,9 @@ ompi_report_comm_methods(int called_from_location)
                         }
                     }
                     if (is_nonconformist) {
-                        char *str = malloc(1024);
-//                      int first = 1;
-                        snprintf(str, 1024, "  host %d:", i);
+                        const size_t bufsize = 1024;
+                        char *str = malloc(bufsize);
+                        snprintf(str, bufsize, "  host %d:", i);
                         for (k=0; k<NUM_COMM_METHODS; ++k) {
                             if (method_count[k] > 0) {
 //                              if (!first) {
