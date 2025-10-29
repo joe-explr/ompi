@@ -67,6 +67,10 @@ PROTOTYPE ERROR_CLASS type_create_hindexed(COUNT count,
         }
     }
 
+    /*
+     * TODO: array_of_displacements can be either MPI_Aint or MPI_Count.
+     *       The call below takes a ompi_disp_array_t which maps to MPI_Aint.
+     */
     rc = ompi_datatype_create_hindexed( count, OMPI_COUNT_ARRAY_CREATE(array_of_blocklengths),
                                         OMPI_COUNT_ARRAY_CREATE(array_of_displacements),
                                         oldtype, newtype );
@@ -76,13 +80,21 @@ PROTOTYPE ERROR_CLASS type_create_hindexed(COUNT count,
     }
     /* data description */
     {
-        ompi_count_array_t a_i[2] = {OMPI_COUNT_ARRAY_CREATE(&count), OMPI_COUNT_ARRAY_CREATE(array_of_blocklengths)};
+#if OMPI_BIGCOUNT_SRC
+        ompi_count_array_t a_i[3] = {
+                    OMPI_COUNT_ARRAY_CREATE(&count),
+                    OMPI_COUNT_ARRAY_CREATE(array_of_blocklengths),
+                    OMPI_COUNT_ARRAY_CREATE(array_of_displacements)};
 
-        ompi_datatype_set_args( *newtype,
-                                (sizeof(count) != sizeof(size_t)) ? count + 1 : 0,
-                                (sizeof(count) == sizeof(size_t)) ? count + 1 : 0,
+        ompi_datatype_set_args( *newtype, 0, 2*count + 1,
+                                a_i, 0, OMPI_DISP_ARRAY_NULL,
+                                1, &oldtype, MPI_COMBINER_HINDEXED );
+#else
+        ompi_count_array_t a_i[2] = {OMPI_COUNT_ARRAY_CREATE(&count), OMPI_COUNT_ARRAY_CREATE(array_of_blocklengths)};
+        ompi_datatype_set_args( *newtype, count + 1, 0,
                                 a_i, count, OMPI_DISP_ARRAY_CREATE(array_of_displacements),
                                 1, &oldtype, MPI_COMBINER_HINDEXED );
+#endif
     }
 
     return MPI_SUCCESS;

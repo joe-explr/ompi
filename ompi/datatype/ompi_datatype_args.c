@@ -171,6 +171,11 @@ int32_t ompi_datatype_set_args( ompi_datatype_t* pData,
         size_t count = opal_count_array_get(counts[0], 0);
         copy_count_array(1, &pi, &pl, counts[0]);
         copy_count_array(count, &pi, &pl, counts[1]);
+        if (cl > 0) {
+            // copy the displacements
+            memcpy(pl, opal_count_array_ptr(counts[2]), count * sizeof(MPI_Count));
+            pl += count;
+        }
         break;
     }
 
@@ -187,6 +192,11 @@ int32_t ompi_datatype_set_args( ompi_datatype_t* pData,
         size_t count = opal_count_array_get(counts[0], 0);
         copy_count_array(1, &pi, &pl, counts[0]);
         copy_count_array(count, &pi, &pl, counts[1]);
+        if (cl > 0) {
+            // copy the displacements
+            memcpy(pl, opal_count_array_ptr(counts[2]), count * sizeof(MPI_Count));
+            pl += count;
+        }
         break;
     }
 
@@ -229,6 +239,12 @@ int32_t ompi_datatype_set_args( ompi_datatype_t* pData,
     case MPI_COMBINER_HINDEXED_BLOCK:
         copy_count_array(1, &pi, &pl, counts[0]);
         copy_count_array(1, &pi, &pl, counts[1]);
+        if (cl > 0) {
+            // copy the displacements
+            size_t count = opal_count_array_get(counts[0], 0);
+            memcpy(pl, opal_count_array_ptr(counts[2]), count * sizeof(MPI_Count));
+            pl += count;
+        }
         break;
 
     default:
