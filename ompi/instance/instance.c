@@ -835,6 +835,9 @@ int ompi_mpi_instance_init (int ts_level,  opal_info_t *info, ompi_errhandler_t 
         opal_set_using_threads(true);
     }
 
+    /* Set single-threaded flag for optimization purposes */
+    opal_single_threaded = (ts_level == MPI_THREAD_SINGLE);
+
     opal_mutex_lock (&instance_lock);
     if (0 == opal_atomic_fetch_add_32 (&ompi_instance_count, 1)) {
         ret = ompi_mpi_instance_init_common (argc, argv);
@@ -1292,7 +1295,7 @@ fn_try_again:
             ret = MPI_ERR_ARG; /* pset_name not valid */
             break;
         case PMIX_ERR_UNREACH:
-            sprintf(msg_string,"PMIx server unreachable");
+            snprintf(msg_string, sizeof(msg_string), "PMIx server unreachable");
             opal_show_help("help-comm.txt",
                            "MPI function not supported",
                            true,
@@ -1301,7 +1304,7 @@ fn_try_again:
             ret = MPI_ERR_UNSUPPORTED_OPERATION;
             break;
         case PMIX_ERR_NOT_SUPPORTED:
-            sprintf(msg_string,"PMIx server does not support PMIX_QUERY_PSET_MEMBERSHIP operation");
+            snprintf(msg_string, sizeof(msg_string), "PMIx server does not support PMIX_QUERY_PSET_MEMBERSHIP operation");
             opal_show_help("help-comm.txt",
                            "MPI function not supported",
                            true,
@@ -1313,7 +1316,6 @@ fn_try_again:
             ret = opal_pmix_convert_status(rc);
             break;
         }
-        ompi_instance_print_error ("PMIx_Query_info() failed", ret);
         goto fn_w_query;
     }
 
@@ -1334,7 +1336,6 @@ fn_try_again:
 		if (OPAL_SUCCESS == rc) {
                     group->grp_proc_pointers[i] = ompi_proc_find_and_add(&pname,&isnew);
                 } else {
-                    ompi_instance_print_error ("OPAL_PMIX_CONVERT_PROCT failed %d", ret);
                     ompi_group_free(&group);
                     goto fn_w_info;
                 }

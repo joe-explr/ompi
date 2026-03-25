@@ -19,6 +19,7 @@
  * Copyright (c) 2018      FUJITSU LIMITED.  All rights reserved.
  * Copyright (c) 2018-2025 Triad National Security, LLC. All rights
  *                         reserved.
+ * Copyright (c) 2026      NVIDIA Corporation.  All rights reserved.
  * $COPYRIGHT$
  *
  * Additional copyrights may follow
@@ -235,6 +236,8 @@ int ompi_op_init(void)
     ompi_op_ddt_map[OMPI_DATATYPE_MPI_LONG] = OMPI_OP_BASE_TYPE_LONG;
     ompi_op_ddt_map[OMPI_DATATYPE_MPI_UNSIGNED_LONG] = OMPI_OP_BASE_TYPE_UNSIGNED_LONG;
 
+    ompi_op_ddt_map[OMPI_DATATYPE_MPI_FLOAT128] = OMPI_OP_BASE_TYPE_REAL16;
+
     /* Create the intrinsic ops */
 
     if (OMPI_SUCCESS !=
@@ -284,10 +287,6 @@ int ompi_op_init(void)
                       FLAGS, "MPI_NO_OP")) {
         return OMPI_ERROR;
     }else{
-/* This code is placed back here to support
- * HCOL allreduce at the moment. It is a part of bgate repository only. This conflict with OMPI v1.7
- * is to be resolved some other way.
- * */
         ompi_mpi_op_null.op.op_type = OMPI_OP_NULL;
         ompi_mpi_op_max.op.op_type = OMPI_OP_MAX;
         ompi_mpi_op_min.op.op_type = OMPI_OP_MIN;
