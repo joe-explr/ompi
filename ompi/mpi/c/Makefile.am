@@ -488,6 +488,7 @@ prototype_sources = \
 	win_get_name.c.in \
 	win_get_notify_value.c.in \
 	win_reset_notify_value.c.in \
+	win_get_num_notify.c.in \
 	win_lock_all.c.in \
 	win_lock.c.in \
 	win_post.c.in \
@@ -495,6 +496,7 @@ prototype_sources = \
 	win_set_errhandler.c.in \
 	win_set_info.c.in \
 	win_set_name.c.in \
+	win_set_num_notify.c.in \
 	win_shared_query.c.in \
 	win_start.c.in \
 	win_sync.c.in \

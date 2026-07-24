@@ -359,6 +359,18 @@ typedef int (*ompi_osc_base_module_rget_accumulate_fn_t)(const void *origin_addr
                                                          struct ompi_win_t *win,
                                                          struct ompi_request_t **request);
 
+/* Notified communication (MPI Standard Section 12.6).  The put_notify,
+ * get_notify, rput_notify, rget_notify, win_get_notify_value and
+ * win_reset_notify_value function-pointer types are declared above; only the
+ * counter-management types are declared here. */
+typedef int (*ompi_osc_base_module_win_set_num_notify_fn_t)(struct ompi_win_t *win,
+                                                            struct opal_info_t *info,
+                                                            int num_notifications);
+
+typedef int (*ompi_osc_base_module_win_get_num_notify_fn_t)(struct ompi_win_t *win,
+                                                            int target_rank,
+                                                            int *num_notifications);
+
 typedef int (*ompi_osc_base_module_fence_fn_t)(int mpi_assert, struct ompi_win_t *win);
 
 
@@ -437,6 +449,15 @@ struct ompi_osc_base_module_4_0_0_t {
     ompi_osc_base_module_raccumulate_fn_t osc_raccumulate;
     ompi_osc_base_module_rget_accumulate_fn_t osc_rget_accumulate;
 
+    ompi_osc_base_module_put_notify_fn_t osc_put_notify;
+    ompi_osc_base_module_get_notify_fn_t osc_get_notify;
+    ompi_osc_base_module_rput_notify_fn_t osc_rput_notify;
+    ompi_osc_base_module_rget_notify_fn_t osc_rget_notify;
+    ompi_osc_base_module_win_get_notify_value_fn_t osc_win_get_notify_value;
+    ompi_osc_base_module_win_reset_notify_value_fn_t osc_win_reset_notify_value;
+    ompi_osc_base_module_win_set_num_notify_fn_t osc_win_set_num_notify;
+    ompi_osc_base_module_win_get_num_notify_fn_t osc_win_get_num_notify;
+
     ompi_osc_base_module_fence_fn_t osc_fence;
 
     ompi_osc_base_module_start_fn_t osc_start;
@@ -455,12 +476,6 @@ struct ompi_osc_base_module_4_0_0_t {
     ompi_osc_base_module_flush_all_fn_t osc_flush_all;
     ompi_osc_base_module_flush_local_fn_t osc_flush_local;
     ompi_osc_base_module_flush_local_all_fn_t osc_flush_local_all;
-    ompi_osc_base_module_put_notify_fn_t osc_put_notify;
-    ompi_osc_base_module_get_notify_fn_t osc_get_notify;
-    ompi_osc_base_module_win_get_notify_value_fn_t osc_win_get_notify_value;
-    ompi_osc_base_module_win_reset_notify_value_fn_t osc_win_reset_notify_value;
-    ompi_osc_base_module_rput_notify_fn_t osc_rput_notify;
-    ompi_osc_base_module_rget_notify_fn_t osc_rget_notify;
 };
 typedef struct ompi_osc_base_module_4_0_0_t ompi_osc_base_module_4_0_0_t;
 typedef ompi_osc_base_module_4_0_0_t ompi_osc_base_module_t;
